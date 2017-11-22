@@ -17,20 +17,20 @@ matplotlib
 **Envs:**  
 Anaconda and Python 3.5  
 
-**TensorFlow install**  
+**TensorFlow Install:**  
 https://www.tensorflow.org/install/  
 
 **Packages:**   
 conda install numpy pandas matplotlib  
 conda install spyder  
 
-**Run Steps**  
+**Run Steps:**  
 % git clone https://github.com/jasonx1011/stock-tensorflow.git  
 % python stock.py  
 or
 using **spyder** to run stock.py (Recommended)  
 
-**Sample Outputs**  
+**Sample Outputs:**  
    * Plotting Outputs:  
 ![sample_plot_1](./assets/result_training_set_full.png)  
 ![sample_plot_2](./assets/result_training_set_last_60_days.png)  
