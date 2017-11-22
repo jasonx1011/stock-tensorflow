@@ -5,10 +5,10 @@
 **Goal:**  
 Using S&amp;P500 historical data from yahoo finance to predict S&amp;P500 price for the next day  
 
-**Raw data:**   
+**Raw Data:**   
 S&amp;P500 historical data from yahoo finance (1980.01.02 - 2017.11.17)
 
-**ML algorithms (implemented by TensorFlow):**  
+**ML Algorithms (implemented by TensorFlow):**  
 Feedforward Artificial Neural Network.
 
 **Plotting:**  
