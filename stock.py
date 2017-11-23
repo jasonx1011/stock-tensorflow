@@ -53,9 +53,11 @@ def flatten(x_tensor, name):
     with tf.name_scope(name):
         result = tf.reshape(x_tensor, [-1, flatten_dim], name=name)
         tf.summary.histogram("flatten_layer", result)
-    print("flatten")
+    print("==================================================")
+    print("flatten:")
     print("x_tensor = {}".format(x_tensor))
     print("result = {}".format(result))
+    print("==================================================")
     return result
 
 def fully_connect(x_tensor, num_outputs, name):
@@ -63,6 +65,7 @@ def fully_connect(x_tensor, num_outputs, name):
     Apply a fully connection layers
     """
     shape_list = x_tensor.get_shape().as_list()
+    print("==================================================")
     print("fully_connect: ")
     print("input shape = {}".format(shape_list))
     with tf.name_scope(name):
@@ -74,6 +77,7 @@ def fully_connect(x_tensor, num_outputs, name):
                                  name=name)
         tf.summary.histogram("fully_connect_layer", result)
     print("result = {}".format(result))
+    print("==================================================")
     return result
 
 def output(x_tensor, num_outputs, name):
@@ -298,7 +302,7 @@ def naive_model(X_train_valid_test, y_train_valid_test):
 def main():
     turn_on_tf_board = True
     # turn_on_txt_log = True
-    save_images = False  
+    save_images = True  
     single_run = True
     
     file_manager.backup_files([TF_LOGDIR, TXT_LOGDIR, IMAGES_DIR])
@@ -314,11 +318,11 @@ def main():
                                                                     FEATURE_LIST)
     
     helper.plot_data(X_train_valid_test, y_train_valid_test,
-                     DAY_SHIFT, IMAGES_DIR, save_images)
+                     DAY_SHIFT, IMAGES_DIR, save_images, FEATURE_LIST)
     
     # Hyper parameters default values
     lr = 1E-3
-    epochs = 100
+    epochs = 2000
     # batch_size = 128
     batch_size = 32
     hidden_layers = [16, 32]

@@ -23,13 +23,12 @@ def data_split(X, y, test_size):
     X_test = X[split_idx:]
     y_test = y[split_idx:]
     
-    print("========================")
+    print("==================================================")
     print("Original total size = {}".format(total_len))
-    print("X_train.shape = {}".format(X_train.shape))
-    print("y_train.shape = {}".format(y_train.shape))
-    print("X: train size = {}, test size = {}".format(len(X_train), len(X_test)))
-    print("y: train size = {}, test size = {}".format(len(y_train), len(y_test)))
-    print("========================")
+    print("split ratio = {}, {}".format((1 - test_size), test_size))
+    print("First part: X.shape = {}, y.shape = {}".format(X_train.shape, y_train.shape))
+    print("Second part: X.shape = {}, y.shape = {}".format(X_test.shape, y_test.shape))
+    print("==================================================")
     
     return X_train, X_test, y_train, y_test
 
@@ -39,8 +38,10 @@ def data_preprocess(df, day_shift, date_list, feature_list):
     print("raw data df.head(): ")
     print(df.head())
     
+    print("==================================================")
     print("DATE_LIST = {}".format(date_list))
     print("FEATURE_LIST = {}".format(feature_list))
+    print("==================================================")
     
     extract_list = date_list + feature_list
     df = df[extract_list]
@@ -52,6 +53,7 @@ def data_preprocess(df, day_shift, date_list, feature_list):
         else:
             print("No missing data in feature of '{}'".format(feature))
     
+    print("==================================================")
     print("Extracted df.head(): ")
     print(df.head())
 
@@ -84,10 +86,14 @@ def plot_samples(title, x_label, y_label, data, line_label, images_dir, save_ima
     plt.title(title)
     plt.xlabel(x_label)
     plt.ylabel(y_label)
-
+    
+    # print("data[0].shape = {}".format(data[0].shape))
+    # print("len(data) = {}".format(len(data)))
+    # data[i] is np.array of m x n, which m = input length, n = feature length
     for i in range(len(data)):
         x = [idx for idx in range(len(data[i]))]
-        plt.plot(x, data[i], label = "{}".format(line_label[i]))
+        for line_idx in range(data[i].shape[1]):
+            plt.plot(x, data[i][:, line_idx], label = line_label[line_idx])
 
     plt.grid()
     
@@ -98,7 +104,7 @@ def plot_samples(title, x_label, y_label, data, line_label, images_dir, save_ima
     return None
 
 def plot_data(X_train_valid_test, y_train_valid_test, day_shift,
-              images_dir, save_images):
+              images_dir, save_images, feature_list):
     partial_day = 60
     postfix = "_last_" + str(partial_day) + "_days"
     title = ["inputs_" + "training_set" + postfix, 
@@ -106,23 +112,19 @@ def plot_data(X_train_valid_test, y_train_valid_test, day_shift,
              "inputs_" + "test_set" + postfix]
     x_label = "number of business day"
     y_label = "price"
-    line_label = ["input" + "(daily close price)",
-                  "target" + "(" + str(day_shift) + " day shift)"]
-#==============================================================================
-#     line_label = []
-#     for i in range(len(feature_list)):
-#         line_label.append("input" + "(daily" + feature_list[i] + ")")
-#     line_label = 
-#                   "target" + "(" + str(day_shift) + " day shift)"]
-#==============================================================================
-    
+
+    line_label = []
+    for i in range(len(feature_list)):
+        line_label.append("input" + " (" + feature_list[i] + ")")
+    line_label.append("target" + " (" + str(day_shift) + " day shift of Close)")
+
     # plot the training/validation/test set    
     for i in range(len(title)):
-        # data = [X_train_valid_test[i], y_train_valid_test[i]]
-        data = [X_train_valid_test[i][-partial_day:], 
-                y_train_valid_test[i][-partial_day:]]
-        plot_samples(title[i], x_label, y_label, data, line_label, images_dir, save_images)
-    
+        # concatenate y to the right for plotting
+        data = [np.concatenate((X_train_valid_test[i][-partial_day:], 
+                                y_train_valid_test[i][-partial_day:]), axis=1)]
+        plot_samples(title[i], x_label, y_label, data, line_label, 
+                     images_dir, save_images)
     return None
 
 def plot_results(y_train, pred_train, y_valid, pred_valid, images_dir, save_images):
@@ -139,14 +141,19 @@ def plot_results(y_train, pred_train, y_valid, pred_valid, images_dir, save_imag
     line_label = ["target value", "predition value"]
     
     # title = ["Training set"]
-    data_full = [y_train[:], pred_train[:]]
-    data_partial = [y_train[-60:], pred_train[-60:]]
+
+    # data_full = [y_train[:], pred_train[:]]
+    # data_partial = [y_train[-60:], pred_train[-60:]]
+    data_full = [np.concatenate((y_train[:], pred_train[:]), axis=1)]
+    data_partial = [np.concatenate((y_train[-partial_day:], pred_train[-partial_day:]), axis=1)]
     plot_samples(title[0], x_label, y_label, data_full, line_label, images_dir, save_images)
     plot_samples(title[1], x_label, y_label, data_partial, line_label, images_dir, save_images)
     
     # title = ["Validation set"]
-    data_full = [y_valid[:], pred_valid[:]]
-    data_partial = [y_valid[-partial_day:], pred_valid[-partial_day:]]
+    # data_full = [y_valid[:], pred_valid[:]]
+    # data_partial = [y_valid[-partial_day:], pred_valid[-partial_day:]]
+    data_full = [np.concatenate((y_valid[:], pred_valid[:]), axis=1)]
+    data_partial = [np.concatenate((y_valid[-partial_day:], pred_valid[-partial_day:]), axis=1)]
     plot_samples(title[2], x_label, y_label, data_full, line_label, images_dir, save_images)
     plot_samples(title[3], x_label, y_label, data_partial, line_label, images_dir, save_images)
     

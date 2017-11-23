@@ -37,3 +37,15 @@ using **spyder** to run stock.py (Recommended)
 ![sample_plot_3](./assets/result_validation_set_full.png)  
 ![sample_plot_4](./assets/result_validation_set_last_60_days.png)  
 
+**Program Flow:**  
+   * import raw data (pandas)  
+   * preprocess data (pandas & numpy)  
+   * no normalization & shuffle for training  
+      * the idea is to preserve the time series information or pattern  
+   * build mlp_net (TensorFlow)  
+   * build the graph and train (TensorFlow & TensorBoard)  
+   * run grid search for fine tuning hyperparameters  
+   * compare results with Naive Model  
+      * Naive Model: simply take mean() of the features as the prediction value  
+   * output tensorboard meta-data or txt logs or images  
+   * explore the data of multple runs by using TensorBoard  
