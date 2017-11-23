@@ -41,19 +41,23 @@ using `spyder` to run stock.py (Recommended)
 ![sample_plot_3](./assets/result_validation_set_full.png)  
 ![sample_plot_4](./assets/result_validation_set_last_60_days.png)  
 
-**Results (results may fluctuate):**
+**Results (may fluctuate):**  
 Final total_loss:  
   
-loss_train = 0.944, lr_1E-03,2000,32,h_layers_16_32  
-loss_valid = 2.311, lr_1E-03,2000,32,h_layers_16_32  
-runtime = 3.496 (mins)  
+rmse_train= 3.951, lr_1E-03,2000,32,h_layers_16_32  
+max/min difference: 3.209 to -13.417  
   
-Naive model:  
-Final total_loss:  
+rmse_valid= 5.836, lr_1E-03,2000,32,h_layers_16_32  
+max/min difference: 4.704 to -20.143  
   
-loss_train = 4.243  
-loss_valid = 9.078  
-
+Naive model:   
+  
+rmse_train= 4.243  
+max/min difference: 33.170 to -46.265  
+  
+rmse_valid= 9.078  
+max/min difference: 59.725 to -55.525  
+  
 **Program Flow:**  
    * import raw data (`pandas`)  
    * preprocess data (`pandas` & `numpy`)  

@@ -233,12 +233,24 @@ def run_tf(log_timestr, X_train_valid_test, y_train_valid_test, turn_on_tf_board
         helper.plot_results(y_train, pred_train, y_valid, pred_valid,
                             IMAGES_DIR, save_images)
         
+        diff_train = pred_train - y_train
+        diff_valid = pred_valid - y_valid
+        
+        max_diff_train, min_diff_train = float(max(diff_train)), float(min(diff_train))
+        max_diff_valid, min_diff_valid = float(max(diff_valid)), float(min(diff_valid))
+                
+        rmse_train = np.sqrt(np.mean((diff_train)**2))
+        rmse_valid = np.sqrt(np.mean((diff_valid)**2))
+        
         print("==================================================")
         print("Final total_loss: \n")
-        print("loss_train = {:>5.3f}, {}".format(loss_train, hparam_str))
-        print("loss_valid = {:>5.3f}, {}".format(loss_valid, hparam_str))
+        print("rmse_train= {:>5.3f}, {}".format(rmse_train, hparam_str))
+        print("max/min difference: {:5.3f} to {:5.3f}".format(max_diff_train, min_diff_train))
+        print("")                                                        
+        print("rmse_valid= {:>5.3f}, {}".format(rmse_valid, hparam_str))
+        print("max/min difference: {:5.3f} to {:5.3f}".format(max_diff_valid, min_diff_valid))
         print("==================================================")
-        
+    
     end_time = timeit.default_timer()
     runtim_min = (end_time - start_time)/60
     print("runtime = {:.3f} (mins)".format(runtim_min))
@@ -252,8 +264,11 @@ def run_tf(log_timestr, X_train_valid_test, y_train_valid_test, turn_on_tf_board
         logfile.write("{}\n".format(hparam_str))
         logfile.write("\n")
         logfile.write("Final total_loss:\n")
-        logfile.write("loss_train = {:>5.3f}, {}\n".format(loss_train, hparam_str))
-        logfile.write("loss_valid = {:>5.3f}, {}\n".format(loss_valid, hparam_str))
+        logfile.write("rmse_train= {:>5.3f}, {}\n".format(rmse_train, hparam_str))
+        logfile.write("max/min difference: {:5.3f} to {:5.3f}\n".format(max_diff_train, min_diff_train))
+        logfile.write("\n")                                                        
+        logfile.write("rmse_valid= {:>5.3f}, {}\n".format(rmse_valid, hparam_str))
+        logfile.write("max/min difference: {:5.3f} to {:5.3f}\n".format(max_diff_valid, min_diff_valid))
         logfile.write("\n")
         logfile.write("runtime = {:.3f} (mins)\n".format(runtim_min))
         logfile.write("==================================================\n")
@@ -282,19 +297,29 @@ def naive_model(X_train_valid_test, y_train_valid_test):
     # print(X_valid)
     pred_train = np.mean(X_train[:], axis=1)
     pred_valid = np.mean(X_valid[:], axis=1)
+    
     pred_train = pred_train.reshape(y_train.shape)
     pred_valid = pred_valid.reshape(y_valid.shape)
     # print(pred_valid)
     # print(y_valid)
+    
     # rmse loss
-    loss_train = np.sqrt(np.mean((pred_train - y_train)**2))
-    loss_valid = np.sqrt(np.mean((pred_valid - y_valid)**2))
+    diff_train = pred_train - y_train
+    diff_valid = pred_valid - y_valid
+    
+    max_diff_train, min_diff_train = float(max(diff_train)), float(min(diff_train))
+    max_diff_valid, min_diff_valid = float(max(diff_valid)), float(min(diff_valid))
+            
+    rmse_train = np.sqrt(np.mean((diff_train)**2))
+    rmse_valid = np.sqrt(np.mean((diff_valid)**2))
     
     print("##################################################")
-    print("Naive model:")
-    print("Final total_loss: \n")
-    print("loss_train = {:>5.3f}".format(loss_train))
-    print("loss_valid = {:>5.3f}".format(loss_valid))
+    print("Naive model: \n")
+    print("rmse_train= {:>5.3f}".format(rmse_train))
+    print("max/min difference: {:5.3f} to {:5.3f}".format(max_diff_train, min_diff_train))
+    print("")                                                        
+    print("rmse_valid= {:>5.3f}".format(rmse_valid))
+    print("max/min difference: {:5.3f} to {:5.3f}".format(max_diff_valid, min_diff_valid))
     print("##################################################")
     
     return None
