@@ -27,7 +27,11 @@ DATA_PATH = os.path.join(DATA_DIR, CSV_FILE_NAME)
 RAW_COLUMN_LIST = ["Date", "Open", "High", "Low", "Close", "Adj Close", "Volume"]
 DATE_LIST = ["Date"]
 # FEATURE_LIST = ["Close"]
-FEATURE_LIST = ["Open", "High", "Low", "Close"]
+# we could not pick both "Open" & "Close",
+# since the next day "Open" == the "Close" of today 
+# the target information leak
+# FEATURE_LIST = ["Open", "High", "Low", "Close"]
+FEATURE_LIST = ["High", "Low", "Close"]
 
 # tensorboard log dir
 TF_LOGDIR = "./tf_logs/"
@@ -47,27 +51,27 @@ def debug_print(x, string):
     return None
 
 def flatten(x_tensor, name):
-    shape = x_tensor.get_shape().as_list()
+    """
+    Flatten input layer
+    """
     # without the 1st param, which is Batch Size
+    shape = x_tensor.get_shape().as_list()
     flatten_dim = np.prod(shape[1:])
     with tf.name_scope(name):
         result = tf.reshape(x_tensor, [-1, flatten_dim], name=name)
         tf.summary.histogram("flatten_layer", result)
     print("==================================================")
     print("flatten:")
-    print("x_tensor = {}".format(x_tensor))
+    print("input x_tensor = {}".format(x_tensor))
     print("result = {}".format(result))
     print("==================================================")
     return result
 
 def fully_connect(x_tensor, num_outputs, name):
     """
-    Apply a fully connection layers
+    Apply a fully connection layer
     """
-    shape_list = x_tensor.get_shape().as_list()
-    print("==================================================")
-    print("fully_connect: ")
-    print("input shape = {}".format(shape_list))
+    # shape_list = x_tensor.get_shape().as_list()
     with tf.name_scope(name):
         result = tf.layers.dense(inputs = x_tensor,
                                  units = num_outputs,
@@ -76,13 +80,18 @@ def fully_connect(x_tensor, num_outputs, name):
                                  kernel_initializer = tf.truncated_normal_initializer(),
                                  name=name)
         tf.summary.histogram("fully_connect_layer", result)
+    print("==================================================")
+    print("fully_connect:")
+    print("input x_tensor = {}".format(x_tensor))
     print("result = {}".format(result))
     print("==================================================")
     return result
 
 def output(x_tensor, num_outputs, name):
+    """
+    Apply a output layer with linear output activation function
+    """
     # shape_list = x_tensor.get_shape().as_list()
-    
     # linear output activation function: activation = None
     with tf.name_scope(name):
         result = tf.layers.dense(inputs = x_tensor,
@@ -91,6 +100,11 @@ def output(x_tensor, num_outputs, name):
                                  kernel_initializer = tf.truncated_normal_initializer(),
                                  name=name)
         tf.summary.histogram("output_layer", result)
+    print("==================================================")
+    print("output:")
+    print("input x_tensor = {}".format(x_tensor))
+    print("result = {}".format(result))
+    print("==================================================")
     return result
 
 def mlp_net(x, hidden_layers, n_output, name):
@@ -214,7 +228,7 @@ def run_tf(log_timestr, X_train_valid_test, y_train_valid_test, turn_on_tf_board
                                                      feed_dict={x: X_valid, y: y_valid})                
                 # tf.summary.scalar("loss_valid", loss_valid)
             
-            if epoch % (epochs // 10) == 0:
+            if (epochs // 10) > 0 and epoch % (epochs // 10) == 0:
                 print("Epoch {:>2} :".format(epoch))
                 print("epoch training loss = {:>5.3f}".format(loss_train))
                 print("epoch validation loss = {:>5.3f}".format(loss_valid))
@@ -347,7 +361,7 @@ def main():
     
     # Hyper parameters default values
     lr = 1E-3
-    epochs = 2000
+    epochs = 3000
     # batch_size = 128
     batch_size = 32
     hidden_layers = [16, 32]

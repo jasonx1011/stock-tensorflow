@@ -46,19 +46,29 @@ def data_preprocess(df, day_shift, date_list, feature_list):
     extract_list = date_list + feature_list
     df = df[extract_list]
     
+    print("==================================================")
+    print("Extracted df.head(): ")
+    print("==================================================")
+    print(df.head())
+    print(df.tail())
+    
+    # move "Close" column to as the target
+    df = df.assign(target = lambda x: x["Close"].shift(-day_shift, axis=0))
+    df = df[:-day_shift].reset_index(drop=True)
+    
+    print("==================================================")
+    print("After shift df.head(): ")
+    print("==================================================")
+    print(df.head())
+    print(df.tail())
+    print("==================================================")
+    
     # checking the missing data
     for feature in extract_list:
         if any(df[feature].isnull()):
             print(df[df[feature.isnull]])
         else:
             print("No missing data in feature of '{}'".format(feature))
-    
-    print("==================================================")
-    print("Extracted df.head(): ")
-    print(df.head())
-
-    df = df.assign(target = lambda x: x["Close"].shift(day_shift, axis=0))
-    df = df[day_shift:].reset_index(drop=True)
     
     # X = np.array(df["Close"])
     X = np.array(df[feature_list])
@@ -72,7 +82,13 @@ def data_preprocess(df, day_shift, date_list, feature_list):
     
     X_train_val, X_test, y_train_val, y_test = data_split(X, y, test_size = 0.1)
     X_train, X_valid, y_train, y_valid = data_split(X_train_val, y_train_val, test_size = 0.2)
-    
+    print("###")    
+    print(X_train.shape, y_train.shape)
+    print(X_train[0], y_train[0])
+    print(X_train[1], y_train[1])
+    print(X_train[41], y_train[41])
+    print(X_train[42], y_train[42])
+    print("###")
     X_train_valid_test = (X_train, X_valid, X_test)
     y_train_valid_test = (y_train, y_valid, y_test)
     
