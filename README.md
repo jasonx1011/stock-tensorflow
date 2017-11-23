@@ -36,6 +36,8 @@ using `spyder` to run stock.py (Recommended)
 
 **Sample Outputs:**  
    * Plotting Outputs:  
+![sample_plot_inputs_1](./assets/inputs_training_set_last_60_days.png)  
+![sample_plot_inputs_2](./assets/inputs_validation_set_last_60_days.png)  
 ![sample_plot_1](./assets/result_training_set_full.png)  
 ![sample_plot_2](./assets/result_training_set_last_60_days.png)  
 ![sample_plot_3](./assets/result_validation_set_full.png)  
