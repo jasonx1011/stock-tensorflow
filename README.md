@@ -40,7 +40,9 @@ using `spyder` to run stock.py (Recommended)
 ![sample_plot_2](./assets/result_training_set_last_60_days.png)  
 ![sample_plot_3](./assets/result_validation_set_full.png)  
 ![sample_plot_4](./assets/result_validation_set_last_60_days.png)  
-
+![tb_plot_1](./assets/tb_graph.png)  
+![tb_plot_2](./assets/tb_cost.png)  
+  
 **Results (may fluctuate):**  
 Final total_loss:  
   
