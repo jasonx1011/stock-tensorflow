@@ -250,6 +250,9 @@ def run_tf(log_timestr, X_train_valid_test, y_train_valid_test, turn_on_tf_board
         diff_train = pred_train - y_train
         diff_valid = pred_valid - y_valid
         
+        error_train = np.mean(np.abs(diff_train/y_train))
+        error_valid = np.mean(np.abs(diff_valid/y_valid))
+        
         max_diff_train, min_diff_train = float(max(diff_train)), float(min(diff_train))
         max_diff_valid, min_diff_valid = float(max(diff_valid)), float(min(diff_valid))
                 
@@ -258,10 +261,12 @@ def run_tf(log_timestr, X_train_valid_test, y_train_valid_test, turn_on_tf_board
         
         print("==================================================")
         print("Final total_loss: \n")
-        print("rmse_train= {:>5.3f}, {}".format(rmse_train, hparam_str))
+        print("rmse_train = {:>5.3f}, {}".format(rmse_train, hparam_str))
+        print("error_train = {:>5.3f}, {}".format(error_train, hparam_str))
         print("max/min difference: {:5.3f} to {:5.3f}".format(max_diff_train, min_diff_train))
         print("")                                                        
-        print("rmse_valid= {:>5.3f}, {}".format(rmse_valid, hparam_str))
+        print("rmse_valid = {:>5.3f}, {}".format(rmse_valid, hparam_str))
+        print("error_valid = {:>5.3f}, {}".format(error_valid, hparam_str))        
         print("max/min difference: {:5.3f} to {:5.3f}".format(max_diff_valid, min_diff_valid))
         print("==================================================")
     
@@ -278,11 +283,13 @@ def run_tf(log_timestr, X_train_valid_test, y_train_valid_test, turn_on_tf_board
         logfile.write("{}\n".format(hparam_str))
         logfile.write("\n")
         logfile.write("Final total_loss:\n")
-        logfile.write("rmse_train= {:>5.3f}, {}\n".format(rmse_train, hparam_str))
+        logfile.write("rmse_train = {:>5.3f}, {}\n".format(rmse_train, hparam_str))
+        logfile.write("error_train = {:>5.3f}, {}\n".format(error_train, hparam_str))
         logfile.write("max/min difference: {:5.3f} to {:5.3f}\n".format(max_diff_train, min_diff_train))
         logfile.write("\n")                                                        
-        logfile.write("rmse_valid= {:>5.3f}, {}\n".format(rmse_valid, hparam_str))
+        logfile.write("rmse_valid = {:>5.3f}, {}\n".format(rmse_valid, hparam_str))
         logfile.write("max/min difference: {:5.3f} to {:5.3f}\n".format(max_diff_valid, min_diff_valid))
+        logfile.write("error_valid = {:>5.3f}, {}\n".format(error_valid, hparam_str))        
         logfile.write("\n")
         logfile.write("runtime = {:.3f} (mins)\n".format(runtim_min))
         logfile.write("==================================================\n")
@@ -302,7 +309,7 @@ def make_hparam_string(lr, epochs, batch_size, hidden_layers):
         idx += 1
     return hparam_str
  
-def naive_model(X_train_valid_test, y_train_valid_test):
+def naive_model(log_timestr, X_train_valid_test, y_train_valid_test):
     # unpack input data
     X_train, X_valid, X_test = X_train_valid_test
     y_train, y_valid, y_test = y_train_valid_test
@@ -321,6 +328,9 @@ def naive_model(X_train_valid_test, y_train_valid_test):
     diff_train = pred_train - y_train
     diff_valid = pred_valid - y_valid
     
+    error_train = np.mean(np.abs(diff_train/y_train))
+    error_valid = np.mean(np.abs(diff_valid/y_valid))
+    
     max_diff_train, min_diff_train = float(max(diff_train)), float(min(diff_train))
     max_diff_valid, min_diff_valid = float(max(diff_valid)), float(min(diff_valid))
             
@@ -329,19 +339,33 @@ def naive_model(X_train_valid_test, y_train_valid_test):
     
     print("##################################################")
     print("Naive model: \n")
-    print("rmse_train= {:>5.3f}".format(rmse_train))
+    print("rmse_train = {:>5.3f}".format(rmse_train))
+    print("error_train = {:>5.3f}".format(error_train))
     print("max/min difference: {:5.3f} to {:5.3f}".format(max_diff_train, min_diff_train))
     print("")                                                        
-    print("rmse_valid= {:>5.3f}".format(rmse_valid))
+    print("rmse_valid = {:>5.3f}".format(rmse_valid))
+    print("error_valid = {:>5.3f}".format(error_valid))
     print("max/min difference: {:5.3f} to {:5.3f}".format(max_diff_valid, min_diff_valid))
     print("##################################################")
     
+    with open(TXT_LOGDIR + "log_" + log_timestr + ".txt", "a") as logfile:
+        logfile.write("##################################################\n")
+        logfile.write("\n")
+        logfile.write("Naive model:\n")
+        logfile.write("rmse_train = {:>5.3f}, {}\n".format(rmse_train, "Naive model"))
+        logfile.write("error_train = {:>5.3f}, {}\n".format(error_train, "Naive model"))
+        logfile.write("max/min difference: {:5.3f} to {:5.3f}\n".format(max_diff_train, min_diff_train))
+        logfile.write("\n")                                                        
+        logfile.write("rmse_valid = {:>5.3f}, {}\n".format(rmse_valid, "Naive model"))
+        logfile.write("error_valid = {:>5.3f}, {}\n".format(error_valid, "Naive model"))
+        logfile.write("max/min difference: {:5.3f} to {:5.3f}\n".format(max_diff_valid, min_diff_valid))
+        logfile.write("##################################################\n")    
     return None
    
 def main():
     turn_on_tf_board = True
     # turn_on_txt_log = True
-    save_images = True  
+    save_images = False  
     single_run = True
     
     file_manager.backup_files([TF_LOGDIR, TXT_LOGDIR, IMAGES_DIR])
@@ -384,7 +408,8 @@ def main():
                     
                     run_tf(log_timestr, X_train_valid_test, y_train_valid_test, 
                            turn_on_tf_board,
-                           lr, epochs, batch_size, hidden_layers, hparam_str, save_images)
+                           lr, epochs, batch_size, hidden_layers, 
+                           hparam_str, save_images)
                     
                     for layer_2 in [16, 32, 128]:
                         hidden_layers = [layer_1, layer_2]
@@ -393,7 +418,8 @@ def main():
                         
                         run_tf(log_timestr, X_train_valid_test, y_train_valid_test,
                                turn_on_tf_board,
-                               lr, epochs, batch_size, hidden_layers, hparam_str)
+                               lr, epochs, batch_size, hidden_layers,
+                               hparam_str, save_images)
     
 #==============================================================================
 #     X_train_valid_test, y_train_valid_test = helper.data_preprocess(df,
@@ -402,7 +428,7 @@ def main():
 #                                                                     ["Close"])
 #==============================================================================
 
-    naive_model(X_train_valid_test, y_train_valid_test)
+    naive_model(log_timestr, X_train_valid_test, y_train_valid_test)
     
     return None
 
