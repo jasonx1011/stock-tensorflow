@@ -66,8 +66,6 @@ max/min difference: 99.107 to -111.557
    * import raw data (`pandas`)  
    * preprocess data (`pandas` & `numpy`)  
    * multiple features  
-   * no normalization & shuffle for training  
-      * the idea is to preserve the time series information or pattern  
    * build mlp_net (`TensorFlow`)  
    * build the graph and train (`TensorFlow` & `TensorBoard`)  
    * run grid search for fine tuning hyperparameters (learning rate, batch size, hidden layers, features ...etc)  
