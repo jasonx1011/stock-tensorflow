@@ -46,21 +46,21 @@ using `spyder` to run stock.py (Recommended)
 ![tb_plot_2](./assets/tb_cost.png)  
   
 **Results (may fluctuate):**  
-Final total_loss:  
-  
-rmse_train= 3.951, lr_1E-03,2000,32,h_layers_16_32  
-max/min difference: 3.209 to -13.417  
-  
-rmse_valid= 5.836, lr_1E-03,2000,32,h_layers_16_32  
-max/min difference: 4.704 to -20.143  
-  
-Naive model:   
-  
-rmse_train= 4.243  
-max/min difference: 33.170 to -46.265  
-  
-rmse_valid= 9.078  
-max/min difference: 59.725 to -55.525  
+Final total_loss: 
+
+rmse_train= 8.945, lr_1E-03,3000,32,h_layers_16_32
+max/min difference: 83.792 to -66.364
+
+rmse_valid= 16.706, lr_1E-03,3000,32,h_layers_16_32
+max/min difference: 107.097 to -95.214
+___
+Naive model: 
+
+rmse_train= 8.655
+max/min difference: 95.897 to -76.097
+
+rmse_valid= 16.867
+max/min difference: 99.107 to -111.557
   
 **Program Flow:**  
    * import raw data (`pandas`)  
