@@ -2,6 +2,9 @@
 
 [`TensorFlow` and `TensorBoard`] 
 
+**Summary**  
+Predicted the daily S&P500 index price using TensorFlow with multiple input features, validation error ~= 1%  
+  
 **Goal:**  
 Using S&amp;P500 historical data from yahoo finance to predict S&amp;P500 price for the next day  
 
