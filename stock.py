@@ -13,6 +13,7 @@ import timeit
 
 import numpy as np
 import pandas as pd
+from sklearn.utils import shuffle
 import tensorflow as tf
 
 import file_manager
@@ -130,7 +131,7 @@ def mlp_net(x, hidden_layers, n_output, name):
     
     return pred
 
-def next_batch(x, y, batch_size):
+def next_batch(x, y, batch_size, shuffle_flag):
     if len(x) != len(y):
         raise SystemError("In def next_batch(x, y), len(x) != len(y)")
     
@@ -138,8 +139,21 @@ def next_batch(x, y, batch_size):
     while idx < len(x):
         batch_x = x[idx : idx + batch_size]
         batch_y = y[idx : idx + batch_size]
-
-        yield batch_x, batch_y
+#==============================================================================
+#         print("orig:")
+#         print(batch_x[:3])
+#         print(batch_y[:3])
+#==============================================================================
+        if shuffle_flag:
+            a, b = shuffle(batch_x, batch_y)
+#==============================================================================
+#             print("shuffle:")
+#             print(a[:3])
+#             print(b[:3])
+#==============================================================================
+            yield a, b
+        else:
+            yield batch_x, batch_y
         idx += batch_size
 
 def run_tf(log_timestr, X_train_valid_test, y_train_valid_test, turn_on_tf_board,
@@ -178,7 +192,10 @@ def run_tf(log_timestr, X_train_valid_test, y_train_valid_test, turn_on_tf_board
         # tf.summary.scalar("rmse_valid", rmse_valid)
     
     with tf.name_scope("optimizer"):
+        # less stable during training
         optimizer = tf.train.AdamOptimizer(lr).minimize(cost)
+        # more stable
+        # optimizer = tf.train.AdagradOptimizer(lr).minimize(cost)
     
     merged = tf.summary.merge_all()
     
@@ -202,7 +219,7 @@ def run_tf(log_timestr, X_train_valid_test, y_train_valid_test, turn_on_tf_board
             
             # Loop over all batches
             batch_count = 0
-            for batch_x, batch_y in next_batch(X_train, y_train, batch_size):
+            for batch_x, batch_y in next_batch(X_train, y_train, batch_size, shuffle_flag=True):
                 
                 sess.run(optimizer, feed_dict={x: batch_x,
                                                y: batch_y})
