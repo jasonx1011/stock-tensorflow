@@ -192,8 +192,8 @@ def run_tf(log_timestr, X_train_valid_test, y_train_valid_test, turn_on_tf_board
         # tf.summary.scalar("rmse_valid", rmse_valid)
     
     with tf.name_scope("optimizer"):
-        optimizer = tf.train.AdamOptimizer(1E-4).minimize(cost)
-        # optimizer = tf.train.AdagradOptimizer(1E-4).minimize(cost)
+        optimizer = tf.train.AdamOptimizer(lr).minimize(cost)
+        # optimizer = tf.train.AdagradOptimizer(lr).minimize(cost)
     
     merged = tf.summary.merge_all()
     
@@ -378,10 +378,12 @@ def naive_model(log_timestr, X_train_valid_test, y_train_valid_test):
     return None
    
 def main():
+    
     turn_on_tf_board = True
     # turn_on_txt_log = True
     save_images = False  
     single_run = True
+    # single_run = False
     
     file_manager.backup_files([TF_LOGDIR, TXT_LOGDIR, IMAGES_DIR])
     
@@ -397,9 +399,9 @@ def main():
     
     helper.plot_data(X_train_valid_test, y_train_valid_test,
                      DAY_SHIFT, IMAGES_DIR, save_images, FEATURE_LIST)
-    
+                     
     # Hyper parameters default values
-    lr = 1E-3
+    lr = 3E-3
     epochs = 2000
     batch_size = 128
     # batch_size = 32
@@ -414,9 +416,9 @@ def main():
                turn_on_tf_board,
                lr, epochs, batch_size, hidden_layers, hparam_str, save_images)
     else:
-        for lr in [1E-3]:
+        for lr in [3E-3, 1E-4]:
             for batch_size in [32, 128]:
-                for layer_1 in [16, 32, 128]:
+                for layer_1 in [16, 32, 64]:
                     hidden_layers = [layer_1]
                     hparam_str = make_hparam_string(lr, epochs, 
                                                     batch_size, hidden_layers)
@@ -426,7 +428,7 @@ def main():
                            lr, epochs, batch_size, hidden_layers, 
                            hparam_str, save_images)
                     
-                    for layer_2 in [16, 32, 128]:
+                    for layer_2 in [16, 32, 64]:
                         hidden_layers = [layer_1, layer_2]
                         hparam_str = make_hparam_string(lr, epochs, 
                                                         batch_size, hidden_layers)
