@@ -50,20 +50,16 @@ using `spyder` to run stock.py (Recommended)
   
 **Results (may fluctuate):**  
 Final total_loss: 
-
-rmse_train= 8.945, lr_1E-03,3000,32,h_layers_16_32
-max/min difference: 83.792 to -66.364
-
-rmse_valid= 16.706, lr_1E-03,3000,32,h_layers_16_32
-max/min difference: 107.097 to -95.214
-___
-Naive model: 
-
-rmse_train= 8.655
-max/min difference: 95.897 to -76.097
-
-rmse_valid= 16.867
-max/min difference: 99.107 to -111.557
+  
+rmse_train = 8.302, lr_1E-03,2000,128,h_layers_16_32  
+error_train = 0.010, lr_1E-03,2000,128,h_layers_16_32  
+max/min difference: 84.397 to -67.111  
+  
+rmse_valid = 16.593, lr_1E-03,2000,128,h_layers_16_32  
+error_valid = 0.010, lr_1E-03,2000,128,h_layers_16_32  
+max/min difference: 106.420 to -102.476  
+  
+---  
   
 **Program Flow:**  
    * import raw data (`pandas`)  

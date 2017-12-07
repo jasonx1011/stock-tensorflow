@@ -192,10 +192,8 @@ def run_tf(log_timestr, X_train_valid_test, y_train_valid_test, turn_on_tf_board
         # tf.summary.scalar("rmse_valid", rmse_valid)
     
     with tf.name_scope("optimizer"):
-        # less stable during training
-        optimizer = tf.train.AdamOptimizer(lr).minimize(cost)
-        # more stable
-        # optimizer = tf.train.AdagradOptimizer(lr).minimize(cost)
+        optimizer = tf.train.AdamOptimizer(1E-4).minimize(cost)
+        # optimizer = tf.train.AdagradOptimizer(1E-4).minimize(cost)
     
     merged = tf.summary.merge_all()
     
@@ -402,9 +400,9 @@ def main():
     
     # Hyper parameters default values
     lr = 1E-3
-    epochs = 3000
-    # batch_size = 128
-    batch_size = 32
+    epochs = 2000
+    batch_size = 128
+    # batch_size = 32
     hidden_layers = [16, 32]
     # hidden_layers = [16]
     
