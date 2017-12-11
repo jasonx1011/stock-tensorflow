@@ -163,6 +163,9 @@ def run_tf(log_timestr, X_train_valid_test, y_train_valid_test, turn_on_tf_board
     X_train, X_valid, X_test = X_train_valid_test
     y_train, y_valid, y_test = y_train_valid_test
     
+    shuffle_flag = True
+    if shuffle_flag:
+        X_train, y_train = shuffle(X_train, y_train)
     # number of input layer and output layer
     # n_input = 1
     # n_output = 1
@@ -192,7 +195,8 @@ def run_tf(log_timestr, X_train_valid_test, y_train_valid_test, turn_on_tf_board
         # tf.summary.scalar("rmse_valid", rmse_valid)
     
     with tf.name_scope("optimizer"):
-        optimizer = tf.train.AdamOptimizer(lr).minimize(cost)
+        # optimizer = tf.train.AdamOptimizer(lr).minimize(cost)
+        optimizer = tf.train.AdamOptimizer(3E-4).minimize(cost)
         # optimizer = tf.train.AdagradOptimizer(lr).minimize(cost)
     
     merged = tf.summary.merge_all()
@@ -217,7 +221,7 @@ def run_tf(log_timestr, X_train_valid_test, y_train_valid_test, turn_on_tf_board
             
             # Loop over all batches
             batch_count = 0
-            for batch_x, batch_y in next_batch(X_train, y_train, batch_size, shuffle_flag=True):
+            for batch_x, batch_y in next_batch(X_train, y_train, batch_size, shuffle_flag=shuffle_flag):
                 
                 sess.run(optimizer, feed_dict={x: batch_x,
                                                y: batch_y})
@@ -324,7 +328,7 @@ def make_hparam_string(lr, epochs, batch_size, hidden_layers):
         idx += 1
     return hparam_str
  
-def naive_model(log_timestr, X_train_valid_test, y_train_valid_test):
+def avg_model(log_timestr, X_train_valid_test, y_train_valid_test):
     # unpack input data
     X_train, X_valid, X_test = X_train_valid_test
     y_train, y_valid, y_test = y_train_valid_test
@@ -353,7 +357,7 @@ def naive_model(log_timestr, X_train_valid_test, y_train_valid_test):
     rmse_valid = np.sqrt(np.mean((diff_valid)**2))
     
     print("##################################################")
-    print("Naive model: \n")
+    print("Avg. model: \n")
     print("rmse_train = {:>5.3f}".format(rmse_train))
     print("error_train = {:>5.3f}".format(error_train))
     print("max/min difference: {:5.3f} to {:5.3f}".format(max_diff_train, min_diff_train))
@@ -366,13 +370,13 @@ def naive_model(log_timestr, X_train_valid_test, y_train_valid_test):
     with open(TXT_LOGDIR + "log_" + log_timestr + ".txt", "a") as logfile:
         logfile.write("##################################################\n")
         logfile.write("\n")
-        logfile.write("Naive model:\n")
-        logfile.write("rmse_train = {:>5.3f}, {}\n".format(rmse_train, "Naive model"))
-        logfile.write("error_train = {:>5.3f}, {}\n".format(error_train, "Naive model"))
+        logfile.write("Avg. model:\n")
+        logfile.write("rmse_train = {:>5.3f}, {}\n".format(rmse_train, "Avg. model"))
+        logfile.write("error_train = {:>5.3f}, {}\n".format(error_train, "Avg. model"))
         logfile.write("max/min difference: {:5.3f} to {:5.3f}\n".format(max_diff_train, min_diff_train))
         logfile.write("\n")                                                        
-        logfile.write("rmse_valid = {:>5.3f}, {}\n".format(rmse_valid, "Naive model"))
-        logfile.write("error_valid = {:>5.3f}, {}\n".format(error_valid, "Naive model"))
+        logfile.write("rmse_valid = {:>5.3f}, {}\n".format(rmse_valid, "Avg. model"))
+        logfile.write("error_valid = {:>5.3f}, {}\n".format(error_valid, "Avg. model"))
         logfile.write("max/min difference: {:5.3f} to {:5.3f}\n".format(max_diff_valid, min_diff_valid))
         logfile.write("##################################################\n")    
     return None
@@ -402,10 +406,12 @@ def main():
                      
     # Hyper parameters default values
     lr = 3E-3
-    epochs = 2000
+    epochs = 20
     batch_size = 128
     # batch_size = 32
-    hidden_layers = [16, 32]
+    # hidden_layers = [16, 32]
+    # hidden_layers = [16, 32, 16, 8]
+    hidden_layers = [64, 64, 32, 16]
     # hidden_layers = [16]
     
     hparam_str = make_hparam_string(lr, epochs, batch_size, hidden_layers)
@@ -445,7 +451,7 @@ def main():
 #                                                                     ["Close"])
 #==============================================================================
 
-    naive_model(log_timestr, X_train_valid_test, y_train_valid_test)
+    avg_model(log_timestr, X_train_valid_test, y_train_valid_test)
     
     return None
 

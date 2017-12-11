@@ -160,6 +160,8 @@ def plot_results(y_train, pred_train, y_valid, pred_valid, images_dir, save_imag
 
     # data_full = [y_train[:], pred_train[:]]
     # data_partial = [y_train[-60:], pred_train[-60:]]
+    # print(y_train[-10:])
+    # print(pred_train[-10:])
     data_full = [np.concatenate((y_train[:], pred_train[:]), axis=1)]
     data_partial = [np.concatenate((y_train[-partial_day:], pred_train[-partial_day:]), axis=1)]
     plot_samples(title[0], x_label, y_label, data_full, line_label, images_dir, save_images)
