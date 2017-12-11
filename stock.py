@@ -13,6 +13,7 @@ import timeit
 
 import numpy as np
 import pandas as pd
+from sklearn.preprocessing import MinMaxScaler
 from sklearn.utils import shuffle
 import tensorflow as tf
 
@@ -156,12 +157,56 @@ def next_batch(x, y, batch_size, shuffle_flag):
             yield batch_x, batch_y
         idx += batch_size
 
+def scale(X_orig, y_orig):
+    scaler_X = MinMaxScaler()
+    scaler_y = MinMaxScaler()
+    scaler_X.fit(X_orig)
+    scaler_y.fit(y_orig)
+    X_scaled = scaler_X.transform(X_orig)
+    y_scaled = scaler_y.transform(y_orig)
+#==============================================================================
+#     verify the scaling
+#==============================================================================
+#==============================================================================
+#     X_recover = np.multiply(X_scaled, scaler_X.data_range_) + scaler_X.data_min
+#     y_recover = np.multiply(y_scaled, scaler_y.data_range_) + scaler_y.data_min
+#     print("x data range:")
+#     print(scaler_X.data_min_)
+#     print(scaler_X.data_max_)
+#     print(scaler_X.data_range_)
+#     print("y data range:")
+#     print("min".format(scaler_y.data_min_))
+#     print("max".format(scaler_y.data_max_))
+#     print("range".format(scaler_y.data_range_))
+#     
+#     print("X_orig")
+#     print(X_orig)
+#     print("X_recover")
+#     print(X_recover)
+#     print("y_orig")
+#     print(y_orig)
+#     print("y_recover")
+#     print(y_recover)
+#     print(X_scaled[3:])
+#     print(y_scaled[3:])
+#==============================================================================
+    
+    return X_scaled, y_scaled, scaler_X, scaler_y
+
+def recover(scaled, scaler):
+    recovered_data = np.multiply(scaled, scaler.data_range_) + scaler.data_min
+    return recovered_data
+
 def run_tf(log_timestr, X_train_valid_test, y_train_valid_test, turn_on_tf_board,
            lr, epochs, batch_size, hidden_layers, hparam_str, save_images):
     
     # unpack input data
     X_train, X_valid, X_test = X_train_valid_test
     y_train, y_valid, y_test = y_train_valid_test
+    
+    X_train, y_train, scaler_X_train, scaler_y_train = scale(X_train, y_train)
+    X_valid, y_valid, scaler_X_valid, scaler_y_valid = scale(X_valid, y_valid)
+    X_test, y_test, scaler_X_test, scaler_y_test = scale(X_train, y_train)
     
     shuffle_flag = True
     if shuffle_flag:
@@ -265,10 +310,16 @@ def run_tf(log_timestr, X_train_valid_test, y_train_valid_test, turn_on_tf_board
                                                   
         helper.plot_results(y_train, pred_train, y_valid, pred_valid,
                             IMAGES_DIR, save_images)
+                            
+        pred_train = recover(pred_train, scaler_y_train)
+        y_train = recover(y_train, scaler_y_train)
+        
+        pred_valid = recover(pred_valid, scaler_y_valid)
+        y_valid = recover(y_valid, scaler_y_valid)
         
         diff_train = pred_train - y_train
         diff_valid = pred_valid - y_valid
-        
+
         error_train = np.mean(np.abs(diff_train/y_train))
         error_valid = np.mean(np.abs(diff_valid/y_valid))
         
@@ -406,12 +457,12 @@ def main():
                      
     # Hyper parameters default values
     lr = 3E-3
-    epochs = 20
+    epochs = 2000
     batch_size = 128
     # batch_size = 32
-    # hidden_layers = [16, 32]
+    hidden_layers = [16, 32]
     # hidden_layers = [16, 32, 16, 8]
-    hidden_layers = [64, 64, 32, 16]
+    # hidden_layers = [64, 64, 32, 16]
     # hidden_layers = [16]
     
     hparam_str = make_hparam_string(lr, epochs, batch_size, hidden_layers)
