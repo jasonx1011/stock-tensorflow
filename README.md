@@ -51,7 +51,9 @@ using `spyder` to run stock.py (Recommended)
 ![tb_plot_2](./assets/tb_cost.png)  
   
 **Results (may fluctuate):**  
+
 ---  
+
 Final total_loss: 
   
 rmse_train = 8.543, lr_3E-03,2000,128,h_layers_16_32  
