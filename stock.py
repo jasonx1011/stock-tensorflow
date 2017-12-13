@@ -168,8 +168,8 @@ def scale(X_orig, y_orig):
 #     verify the scaling
 #==============================================================================
 #==============================================================================
-#     X_recover = np.multiply(X_scaled, scaler_X.data_range_) + scaler_X.data_min
-#     y_recover = np.multiply(y_scaled, scaler_y.data_range_) + scaler_y.data_min
+#     X_recover = np.multiply(X_scaled, scaler_X.data_range_) + scaler_X.data_min_
+#     y_recover = np.multiply(y_scaled, scaler_y.data_range_) + scaler_y.data_min_
 #     print("x data range:")
 #     print(scaler_X.data_min_)
 #     print(scaler_X.data_max_)
@@ -194,7 +194,7 @@ def scale(X_orig, y_orig):
     return X_scaled, y_scaled, scaler_X, scaler_y
 
 def recover(scaled, scaler):
-    recovered_data = np.multiply(scaled, scaler.data_range_) + scaler.data_min
+    recovered_data = np.multiply(scaled, scaler.data_range_) + scaler.data_min_
     return recovered_data
 
 def run_tf(log_timestr, X_train_valid_test, y_train_valid_test, turn_on_tf_board,
