@@ -12,7 +12,7 @@ Using S&amp;P500 historical data from yahoo finance to predict S&amp;P500 price 
 S&amp;P500 historical data from yahoo finance (1980.01.02 - 2017.11.17)
 
 **ML Algorithms (implemented by TensorFlow):**  
-Feedforward Artificial Neural Network.
+Feedforward Artificial Neural Network
 
 **Plotting:**  
 matplotlib  
@@ -69,11 +69,15 @@ max/min difference: 245.265 to -99.755
 **Program Flow:**  
    * import raw data (`pandas`)  
    * preprocess data (`pandas` & `numpy`)  
+      * offset 1 day close price as the target
+      * split training/validation/test sets  
+      * scaling to (0, 1)  
    * multiple features  
+      * daily HIGH, LOW, CLOSE price as features  
    * build mlp_net (`TensorFlow`)  
-   * build the graph and train (`TensorFlow` & `TensorBoard`)  
+   * build the graph and run training (`TensorFlow` & `TensorBoard`)  
    * run grid search for fine tuning hyperparameters (learning rate, batch size, hidden layers, features ...etc)  
    * compare results with Avg. Model  
       * Avg. Model: take mean() of the features as the prediction value  
-   * output tensorboard meta-data or txt logs or images  
-   * explore the data of multple runs by using `TensorBoard`  
+   * output tensorboard meta-data, txt logs, and images  
+   * explore the cost or the weights distribution of multple runs by using `TensorBoard`  
